@@ -1,0 +1,14 @@
+--Speeding up Aggregates with Indexed Views
+
+CREATE VIEW [RFM]
+WITH SCHEMABINDING
+AS
+SELECT [COOKIE_ID],
+       [MONETARY] = SUM([TRANSACTION_VALUE]),
+       [FREQUENCY] = COUNT_BIG(*)
+FROM [dbo].[WEBLOG]
+GROUP BY [COOKIE_ID];
+GO
+CREATE UNIQUE CLUSTERED INDEX IDX_RFM_V ON [RFM] (COOKIE_ID);
+
+--From <http://www.sqlbadpractices.com/> 
