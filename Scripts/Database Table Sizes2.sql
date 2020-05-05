@@ -1,7 +1,9 @@
---DB Table Sizes
+--Database Table Sizes
 SELECT
-    OBJECT_NAME([ddps].[object_id]),
-    [ddps].[in_row_used_page_count] * 8 / 1024
+    [dbname] = DB_NAME(),
+    [indexname] = [i].[name],
+    [tablename] = OBJECT_NAME([ddps].[object_id], DB_ID()),
+    [size] = [ddps].[in_row_used_page_count] * 8 / 1024
 FROM [sys].[dm_db_partition_stats] AS [ddps]
     LEFT JOIN [sys].[indexes] AS [i]
         ON [i].[object_id] = [ddps].[object_id]
@@ -15,4 +17,4 @@ WHERE (
               FROM [sys].[objects] AS [o]
               WHERE [o].[is_ms_shipped] = 1
           )
-ORDER BY 2;
+ORDER BY 4 DESC;
